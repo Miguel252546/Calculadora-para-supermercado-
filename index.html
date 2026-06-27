@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SuperCalc Premium 🛒 | Gestión de Compras & Facturación</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="app-container">
+        <header>
+            <div class="brand">
+                <h1 title="Súper Calculadora">SuperCalc Premium 🛒</h1>
+                <p>Gestión de compras profesional.</p>
+            </div>
+            <button class="theme-toggle" id="theme-toggle" title="Cambiar Tema" aria-label="Alternar modo oscuro">
+                <span id="theme-icon">🌙</span>
+            </button>
+        </header>
+
+        <nav class="view-switcher">
+            <button class="tab-btn active" data-view="cart">🛒 Mi Carrito</button>
+            <button class="tab-btn" data-view="history">📜 Historial</button>
+        </nav>
+
+        <main class="main-card">
+            <div id="view-cart" class="view-content active">
+                <div class="form-group" style="margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border-color);">
+                    <label for="client-name">Cliente (Opcional)</label>
+                    <input type="text" id="client-name" class="modern-input" placeholder="Nombre del cliente o empresa">
+                </div>
+
+                <p class="microcopy">Selecciona un producto de tu lista previa o añade uno nuevo</p>
+
+                <button type="button" class="templates-toggle" id="templates-toggle">📋 Lista Previa</button>
+
+                <div class="templates-panel" id="templates-panel" style="display: none;">
+                    <datalist id="prelist-category-list"></datalist>
+
+                    <div class="template-section" id="prelist-form-section" style="display: none;">
+                        <div class="prelist-form" id="prelist-form">
+                            <div class="prelist-form-row">
+                                <input type="text" id="prelist-category" class="modern-input prelist-input" placeholder="Categoría" list="prelist-category-list" autocomplete="off">
+                                <input type="text" id="prelist-name" class="modern-input prelist-input" placeholder="Nombre del producto" autocomplete="off">
+                                <input type="number" id="prelist-qty" class="modern-input prelist-input prelist-input-sm" placeholder="Cant" min="1" step="1" value="1">
+                            </div>
+                            <input type="text" id="prelist-brand" class="modern-input prelist-input" placeholder="Marca (opcional)" autocomplete="off">
+                            <div class="prelist-form-btns">
+                                <button type="button" class="btn-prelist-save" id="btn-prelist-save">💾 Guardar</button>
+                                <button type="button" class="btn-prelist-cancel" id="btn-prelist-cancel">Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="template-section template-section-search">
+                        <input type="text" class="modern-input templates-search" id="templates-search" placeholder="Buscar en tu lista previa...">
+                    </div>
+
+                    <div class="template-section">
+                        <span class="template-section-label">Ordenar</span>
+                        <div class="templates-sort" id="templates-sort"></div>
+                    </div>
+
+                    <div class="template-section template-section-filters">
+                        <span class="template-section-label">Categoría</span>
+                        <div class="templates-categories" id="templates-categories"></div>
+                        <div class="templates-brands" id="templates-brands" style="display: none;"></div>
+                    </div>
+
+                    <div class="template-section template-section-results">
+                        <div class="template-section-header">
+                            <span class="template-section-label">Productos</span>
+                            <span class="template-count" id="template-count"></span>
+                        </div>
+                        <div class="templates-grid" id="templates-grid"></div>
+                    </div>
+
+                    <div class="template-section template-section-action">
+                        <button type="button" class="btn-prelist-add" id="btn-prelist-add">➕ Añadir producto a lista previa</button>
+                    </div>
+                </div>
+
+                <form class="product-form" id="product-form">
+                    <div class="image-upload-container">
+                        <div class="image-preview-wrapper" id="image-preview-wrapper">
+                            <img id="image-preview" src="" alt="Preview" style="display: none;">
+                            <div id="preview-placeholder">🖼️</div>
+                        </div>
+                        <div class="image-actions">
+                            <button type="button" class="btn-image" id="btn-upload-gallery">📁 Galería</button>
+                            <button type="button" class="btn-image" id="btn-upload-camera">📷 Cámara</button>
+                        </div>
+                        <input type="file" id="file-gallery" accept="image/*" style="display: none;">
+                        <input type="file" id="file-camera" accept="image/*" capture="environment" style="display: none;">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="product-name">Producto</label>
+                        <input type="text" id="product-name" class="modern-input" placeholder="Ej. Café Espresso" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="product-qty">Cantidad</label>
+                            <input type="number" id="product-qty" class="modern-input" placeholder="1" min="1" step="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="product-price">Precio Unit.</label>
+                            <input type="number" id="product-price" class="modern-input" placeholder="0.00" min="0" step="0.01" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-add">Agregar a la lista</button>
+                </form>
+
+                <section class="pending-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Productos Pendientes</h2>
+                        <span class="pending-count" id="pending-count"></span>
+                    </div>
+
+                    <p class="microcopy">Agrega productos solo con nombre y cantidad, el precio lo completas despu&eacute;s</p>
+
+                    <form class="pending-form" id="pending-form">
+                        <div class="pending-form-row-cols">
+                            <input type="text" id="pending-name" class="modern-input" placeholder="Nombre del producto" required autocomplete="off">
+                            <input type="number" id="pending-qty" class="modern-input pending-qty-input" placeholder="Cant" min="1" step="1" value="1">
+                        </div>
+                        <button type="submit" class="btn-pending-add">+ Agregar pendiente</button>
+                    </form>
+
+                    <div class="pending-list" id="pending-list"></div>
+                </section>
+
+                <section class="products-section" style="margin-top: 2.5rem;">
+                    <div class="section-header">
+                        <h2 class="section-title">Productos Actuales</h2>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn-pdf" id="btn-generate-pdf">📄 Facturar PDF</button>
+                            <button class="btn-clear" id="btn-clear-list">Vaciar todo</button>
+                        </div>
+                    </div>
+
+                    <div class="products-list" id="products-list"></div>
+
+                    <div class="total-container">
+                        <span class="total-label">Total General</span>
+                        <span class="total-amount" id="total-amount">$0</span>
+                    </div>
+                </section>
+            </div>
+
+            <div id="view-history" class="view-content">
+                <div class="store-config">
+                    <label style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 0.5rem;">NOMBRE DE TU TIENDA (Para el PDF)</label>
+                    <input type="text" id="store-name-input" class="modern-input" placeholder="Mi Tienda Profesional">
+                </div>
+
+                <div class="section-header">
+                    <h2 class="section-title">Compras Anteriores</h2>
+                    <button class="btn-clear" id="btn-clear-history">Borrar Historial</button>
+                </div>
+                <div class="history-list" id="history-list"></div>
+            </div>
+        </main>
+
+        <footer>
+            &copy; 2026 SuperCalc Premium &bull; v4.0 Professional Edition
+        </footer>
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>
