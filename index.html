@@ -4,175 +4,280 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SuperCalc Premium 🛒 | Gestión de Compras & Facturación</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-    <div class="app-container">
-        <header>
-            <div class="brand">
-                <h1 title="Súper Calculadora">SuperCalc Premium 🛒</h1>
-                <p>Gestión de compras profesional.</p>
+    <div class="app-container" data-app="supercalc">
+
+        <!-- ============================== HEADER ============================== -->
+        <header class="app-header" role="banner">
+            <div class="app-brand">
+                <h1 class="app-title" title="Súper Calculadora">SuperCalc <span class="app-title-accent">Premium</span> 🛒</h1>
+                <p class="app-subtitle">Gestión profesional de compras y facturación</p>
             </div>
-            <button class="theme-toggle" id="theme-toggle" title="Cambiar Tema" aria-label="Alternar modo oscuro">
-                <span id="theme-icon">🌙</span>
+            <button class="theme-toggle" id="theme-toggle" type="button" title="Cambiar tema" aria-label="Alternar modo claro/oscuro">
+                <span id="theme-icon" aria-hidden="true">🌙</span>
             </button>
         </header>
 
-        <nav class="view-switcher">
-            <button class="tab-btn active" data-view="cart">🛒 Mi Carrito</button>
-            <button class="tab-btn" data-view="history">📜 Historial</button>
+        <!-- ============================== NAV ============================== -->
+        <nav class="view-switcher" role="tablist" aria-label="Secciones principales">
+            <button class="tab-btn is-active" role="tab" aria-selected="true" data-view="cart" id="tab-cart">
+                <span class="tab-icon" aria-hidden="true">🛒</span>
+                <span class="tab-label">Mi Carrito</span>
+                <span class="tab-badge" id="badge-cart" hidden>0</span>
+            </button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-view="history" id="tab-history">
+                <span class="tab-icon" aria-hidden="true">📜</span>
+                <span class="tab-label">Historial</span>
+            </button>
         </nav>
 
-        <main class="main-card">
-            <div id="view-cart" class="view-content active">
-                <div class="form-group" style="margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border-color);">
-                    <label for="client-name">Cliente (Opcional)</label>
-                    <input type="text" id="client-name" class="modern-input" placeholder="Nombre del cliente o empresa">
-                </div>
+        <!-- ============================== MAIN ============================== -->
+        <main class="main-card" role="main">
 
-                <p class="microcopy">Selecciona un producto de tu lista previa o añade uno nuevo</p>
+            <!-- =================== VISTA: CARRITO =================== -->
+            <section id="view-cart" class="view-content is-active" role="tabpanel" aria-labelledby="tab-cart">
 
-                <button type="button" class="templates-toggle" id="templates-toggle">📋 Lista Previa</button>
+                <!-- Tarjeta superior: cliente + acceso a lista previa -->
+                <section class="card card-meta" aria-label="Datos de la compra">
+                    <div class="form-group">
+                        <label for="client-name" class="form-label">Cliente <span class="label-hint">(opcional)</span></label>
+                        <input type="text" id="client-name" class="modern-input" placeholder="Nombre del cliente o empresa" autocomplete="off">
+                    </div>
 
-                <div class="templates-panel" id="templates-panel" style="display: none;">
+                    <button type="button" class="prelist-toggle" id="prelist-toggle"
+                            aria-expanded="false" aria-controls="prelist-panel">
+                        <span class="prelist-toggle-icon" aria-hidden="true">📋</span>
+                        <span class="prelist-toggle-label">Lista Previa</span>
+                        <span class="prelist-toggle-count" id="prelist-count-badge">0</span>
+                        <span class="prelist-toggle-arrow" id="prelist-toggle-arrow" aria-hidden="true">▾</span>
+                    </button>
+                </section>
+
+                <!-- Panel desplegable: lista previa -->
+                <section class="prelist-panel" id="prelist-panel" aria-hidden="true" aria-label="Lista de productos frecuentes" hidden>
+                    <header class="prelist-panel-header">
+                        <h2 class="prelist-panel-title">📋 Lista Previa</h2>
+                        <p class="prelist-panel-hint">Selecciona un producto frecuente o añade uno nuevo a tu lista.</p>
+                    </header>
+
+                    <!-- Buscador -->
+                    <div class="prelist-toolbar">
+                        <label class="visually-hidden" for="prelist-search">Buscar en la lista previa</label>
+                        <input type="search" id="prelist-search" class="modern-input prelist-search"
+                               placeholder="🔍  Buscar por nombre, marca o categoría…" autocomplete="off">
+                    </div>
+
+                    <!-- Orden y filtros -->
+                    <div class="prelist-controls">
+                        <div class="prelist-control-group" role="group" aria-label="Ordenar por">
+                            <span class="prelist-control-label">Ordenar</span>
+                            <div class="sort-bar" id="prelist-sort"></div>
+                        </div>
+                        <div class="prelist-control-group" role="group" aria-label="Filtrar por categoría">
+                            <span class="prelist-control-label">Categoría</span>
+                            <div class="chip-bar" id="prelist-categories"></div>
+                        </div>
+                        <div class="prelist-control-group" id="prelist-brands-group" hidden role="group" aria-label="Filtrar por marca">
+                            <span class="prelist-control-label">Marca</span>
+                            <div class="chip-bar" id="prelist-brands"></div>
+                        </div>
+                    </div>
+
+                    <!-- Resultados -->
+                    <div class="prelist-results" aria-live="polite">
+                        <div class="prelist-results-header">
+                            <span class="prelist-results-title">Productos</span>
+                            <span class="prelist-results-count" id="prelist-results-count">0 resultados</span>
+                        </div>
+                        <div class="prelist-grid" id="prelist-grid" role="list"></div>
+                    </div>
+
+                    <!-- Acciones -->
+                    <div class="prelist-actions">
+                        <button type="button" class="btn-prelist-add" id="btn-prelist-add">
+                            <span aria-hidden="true">➕</span> Añadir producto nuevo a la lista
+                        </button>
+                    </div>
+
+                    <!-- Datalist oculto para autocompletar categoría -->
                     <datalist id="prelist-category-list"></datalist>
 
-                    <div class="template-section" id="prelist-form-section" style="display: none;">
-                        <div class="prelist-form" id="prelist-form">
+                    <!-- Formulario inline para crear/editar producto de la lista previa -->
+                    <section class="prelist-form-section" id="prelist-form-section" hidden>
+                        <form class="prelist-form" id="prelist-form" aria-label="Crear o editar producto de la lista previa">
                             <div class="prelist-form-row">
-                                <input type="text" id="prelist-category" class="modern-input prelist-input" placeholder="Categoría" list="prelist-category-list" autocomplete="off">
-                                <input type="text" id="prelist-name" class="modern-input prelist-input" placeholder="Nombre del producto" autocomplete="off">
-                                <input type="number" id="prelist-qty" class="modern-input prelist-input prelist-input-sm" placeholder="Cant" min="1" step="1" value="1">
+                                <div class="form-group">
+                                    <label for="prelist-category" class="form-label">Categoría</label>
+                                    <input type="text" id="prelist-category" class="modern-input"
+                                           placeholder="Ej. Lácteos" list="prelist-category-list" autocomplete="off">
+                                </div>
+                                <div class="form-group">
+                                    <label for="prelist-name" class="form-label">Nombre</label>
+                                    <input type="text" id="prelist-name" class="modern-input"
+                                           placeholder="Ej. Leche entera 1L" autocomplete="off" required>
+                                </div>
+                                <div class="form-group form-group-qty">
+                                    <label for="prelist-qty" class="form-label">Cant.</label>
+                                    <input type="number" id="prelist-qty" class="modern-input"
+                                           placeholder="1" min="1" step="1" value="1">
+                                </div>
                             </div>
-                            <input type="text" id="prelist-brand" class="modern-input prelist-input" placeholder="Marca (opcional)" autocomplete="off">
-                            <div class="prelist-form-btns">
+                            <div class="form-group">
+                                <label for="prelist-brand" class="form-label">Marca <span class="label-hint">(opcional)</span></label>
+                                <input type="text" id="prelist-brand" class="modern-input" placeholder="Ej. Marca propia" autocomplete="off">
+                            </div>
+                            <div class="prelist-form-actions">
                                 <button type="button" class="btn-prelist-save" id="btn-prelist-save">💾 Guardar</button>
                                 <button type="button" class="btn-prelist-cancel" id="btn-prelist-cancel">Cancelar</button>
                             </div>
-                        </div>
-                    </div>
+                        </form>
+                    </section>
+                </section>
 
-                    <div class="template-section template-section-search">
-                        <input type="text" class="modern-input templates-search" id="templates-search" placeholder="Buscar en tu lista previa...">
-                    </div>
-
-                    <div class="template-section">
-                        <span class="template-section-label">Ordenar</span>
-                        <div class="templates-sort" id="templates-sort"></div>
-                    </div>
-
-                    <div class="template-section template-section-filters">
-                        <span class="template-section-label">Categoría</span>
-                        <div class="templates-categories" id="templates-categories"></div>
-                        <div class="templates-brands" id="templates-brands" style="display: none;"></div>
-                    </div>
-
-                    <div class="template-section template-section-results">
-                        <div class="template-section-header">
-                            <span class="template-section-label">Productos</span>
-                            <span class="template-count" id="template-count"></span>
-                        </div>
-                        <div class="templates-grid" id="templates-grid"></div>
-                    </div>
-
-                    <div class="template-section template-section-action">
-                        <button type="button" class="btn-prelist-add" id="btn-prelist-add">➕ Añadir producto a lista previa</button>
-                    </div>
+                <!-- Sub-tabs internos del carrito -->
+                <div class="cart-tabs" id="cart-tablist" role="tablist" aria-label="Secciones del carrito">
+                    <button class="cart-tab-btn is-active" role="tab" aria-selected="true" aria-controls="cart-panel-add" id="cart-tab-btn-add" data-cart-tab="add" tabindex="0">
+                        ➕ Agregar
+                    </button>
+                    <button class="cart-tab-btn" role="tab" aria-selected="false" aria-controls="cart-panel-cart" id="cart-tab-btn-cart" data-cart-tab="cart" tabindex="-1">
+                        🛍️ Carrito
+                        <span class="tab-badge" id="badge-cart-inner" hidden>0</span>
+                    </button>
+                    <button class="cart-tab-btn" role="tab" aria-selected="false" aria-controls="cart-panel-pending" id="cart-tab-btn-pending" data-cart-tab="pending" tabindex="-1">
+                        ⏳ Pendientes
+                        <span class="tab-badge" id="badge-pending-inner" hidden>0</span>
+                    </button>
                 </div>
 
-                <form class="product-form" id="product-form">
-                    <div class="image-upload-container">
-                        <div class="image-preview-wrapper" id="image-preview-wrapper">
-                            <img id="image-preview" src="" alt="Preview" style="display: none;">
-                            <div id="preview-placeholder">🖼️</div>
-                        </div>
-                        <div class="image-actions">
-                            <button type="button" class="btn-image" id="btn-upload-gallery">📁 Galería</button>
-                            <button type="button" class="btn-image" id="btn-upload-camera">📷 Cámara</button>
-                        </div>
-                        <input type="file" id="file-gallery" accept="image/*" style="display: none;">
-                        <input type="file" id="file-camera" accept="image/*" capture="environment" style="display: none;">
-                    </div>
+                <!-- Panel: Agregar producto -->
+                <div class="cart-panel is-active" id="cart-panel-add" role="tabpanel" aria-labelledby="cart-tab-btn-add">
 
-                    <div class="form-group">
-                        <label for="product-name">Producto</label>
-                        <input type="text" id="product-name" class="modern-input" placeholder="Ej. Café Espresso" required>
-                    </div>
+                <!-- Tarjeta: formulario de producto actual -->
+                <section class="card card-form" aria-label="Formulario de producto actual">
+                    <header class="card-header">
+                        <h2 class="card-title">➕ Nuevo producto</h2>
+                    </header>
 
-                    <div class="form-row">
+                    <form class="product-form" id="product-form" novalidate>
+                        <div class="image-upload-container">
+                            <div class="image-preview-wrapper" id="image-preview-wrapper" aria-hidden="true">
+                                <img id="image-preview" src="" alt="" style="display: none;">
+                                <div class="image-preview-placeholder" id="image-preview-placeholder">🖼️</div>
+                            </div>
+                            <div class="image-actions">
+                                <button type="button" class="btn-image" id="btn-upload-gallery">📁 Galería</button>
+                                <button type="button" class="btn-image" id="btn-upload-camera">📷 Cámara</button>
+                            </div>
+                            <input type="file" id="file-gallery" accept="image/*" hidden>
+                            <input type="file" id="file-camera" accept="image/*" capture="environment" hidden>
+                        </div>
+
                         <div class="form-group">
-                            <label for="product-qty">Cantidad</label>
-                            <input type="number" id="product-qty" class="modern-input" placeholder="1" min="1" step="1" required>
+                            <label for="product-name" class="form-label">Producto</label>
+                            <input type="text" id="product-name" class="modern-input" placeholder="Ej. Café Espresso" required>
                         </div>
-                        <div class="form-group">
-                            <label for="product-price">Precio Unit.</label>
-                            <input type="number" id="product-price" class="modern-input" placeholder="0.00" min="0" step="0.01" required>
+
+                <div class="form-row">
+                            <div class="form-group">
+                                <label for="product-qty" class="form-label">Cantidad</label>
+                                <input type="number" id="product-qty" class="modern-input" placeholder="1" min="1" step="1" value="1" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="product-price" class="form-label">Precio unit.</label>
+                                <input type="number" id="product-price" class="modern-input" placeholder="0.00" min="0" step="0.01" required>
+                            </div>
                         </div>
-                    </div>
 
-                    <button type="submit" class="btn-add">Agregar a la lista</button>
-                </form>
+                        <button type="submit" class="btn-add" id="btn-add-product">Agregar a la lista</button>
+                    </form>
+                </section>
 
-                <section class="pending-section">
-                    <div class="section-header">
-                        <h2 class="section-title">Productos Pendientes</h2>
-                        <span class="pending-count" id="pending-count"></span>
-                    </div>
+                </div><!-- /cart-panel-add -->
 
-                    <p class="microcopy">Agrega productos solo con nombre y cantidad, el precio lo completas despu&eacute;s</p>
+                <!-- Panel: Pendientes -->
+                <div class="cart-panel" id="cart-panel-pending" role="tabpanel" aria-labelledby="cart-tab-btn-pending" hidden>
+
+                <!-- Tarjeta: productos pendientes -->
+                <section class="card card-pending" aria-label="Productos pendientes">
+                    <header class="card-header">
+                        <h2 class="card-title">⏳ Pendientes</h2>
+                        <span class="count-badge" id="pending-count" aria-live="polite">0</span>
+                    </header>
+
+                    <p class="microcopy">Agrega productos solo con nombre y cantidad. El precio lo completas después.</p>
 
                     <form class="pending-form" id="pending-form">
-                        <div class="pending-form-row-cols">
-                            <input type="text" id="pending-name" class="modern-input" placeholder="Nombre del producto" required autocomplete="off">
-                            <input type="number" id="pending-qty" class="modern-input pending-qty-input" placeholder="Cant" min="1" step="1" value="1">
+                        <div class="form-row">
+                            <div class="form-group form-group-grow">
+                                <label class="visually-hidden" for="pending-name">Nombre del pendiente</label>
+                                <input type="text" id="pending-name" class="modern-input" placeholder="Nombre del producto" required autocomplete="off">
+                            </div>
+                            <div class="form-group form-group-qty">
+                                <label class="visually-hidden" for="pending-qty">Cantidad</label>
+                                <input type="number" id="pending-qty" class="modern-input" placeholder="Cant" min="1" step="1" value="1">
+                            </div>
                         </div>
                         <button type="submit" class="btn-pending-add">+ Agregar pendiente</button>
                     </form>
 
-                    <div class="pending-list" id="pending-list"></div>
+                    <div class="pending-list" id="pending-list" aria-live="polite"></div>
                 </section>
 
-                <section class="products-section" style="margin-top: 2.5rem;">
-                    <div class="section-header">
-                        <h2 class="section-title">Productos Actuales</h2>
-                        <div style="display: flex; gap: 8px;">
-                            <button class="btn-pdf" id="btn-generate-pdf">📄 Facturar PDF</button>
-                            <button class="btn-clear" id="btn-clear-list">Vaciar todo</button>
+                </div><!-- /cart-panel-pending -->
+
+                <!-- Panel: Carrito -->
+                <div class="cart-panel" id="cart-panel-cart" role="tabpanel" aria-labelledby="cart-tab-btn-cart" hidden>
+
+                <!-- Tarjeta: productos actuales -->
+                <section class="card card-products" aria-label="Productos del carrito">
+                    <header class="card-header">
+                        <h2 class="card-title">🛍️ Productos actuales</h2>
+                        <div class="card-header-actions">
+                            <button type="button" class="btn-pdf" id="btn-generate-pdf">📄 Facturar PDF</button>
+                            <button type="button" class="btn-clear" id="btn-clear-list">Vaciar</button>
                         </div>
-                    </div>
+                    </header>
 
-                    <div class="products-list" id="products-list"></div>
+                    <div class="products-list" id="products-list" aria-live="polite"></div>
 
-                    <div class="total-container">
-                        <span class="total-label">Total General</span>
+                    <footer class="total-container">
+                        <span class="total-label">Total general</span>
                         <span class="total-amount" id="total-amount">$0</span>
-                    </div>
+                    </footer>
                 </section>
-            </div>
 
-            <div id="view-history" class="view-content">
-                <div class="store-config">
-                    <label style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 0.5rem;">NOMBRE DE TU TIENDA (Para el PDF)</label>
-                    <input type="text" id="store-name-input" class="modern-input" placeholder="Mi Tienda Profesional">
+                </div><!-- /cart-panel-cart -->
+            </section>
+
+            <!-- =================== VISTA: HISTORIAL =================== -->
+            <section id="view-history" class="view-content" role="tabpanel" aria-labelledby="tab-history" hidden>
+                <div class="card card-store-config">
+                    <label for="store-name-input" class="form-label">Nombre de tu tienda <span class="label-hint">(para el PDF)</span></label>
+                    <input type="text" id="store-name-input" class="modern-input" placeholder="Mi Tienda Profesional" autocomplete="off">
                 </div>
 
-                <div class="section-header">
-                    <h2 class="section-title">Compras Anteriores</h2>
-                    <button class="btn-clear" id="btn-clear-history">Borrar Historial</button>
-                </div>
-                <div class="history-list" id="history-list"></div>
-            </div>
+                <section class="card card-history" aria-label="Compras anteriores">
+                    <header class="card-header">
+                        <h2 class="card-title">📜 Compras anteriores</h2>
+                        <button type="button" class="btn-clear" id="btn-clear-history">Borrar historial</button>
+                    </header>
+                    <div class="history-list" id="history-list" aria-live="polite"></div>
+                </section>
+            </section>
+
         </main>
 
-        <footer>
-            &copy; 2026 SuperCalc Premium &bull; v4.0 Professional Edition
+        <!-- ============================== TOAST ============================== -->
+        <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+        <footer class="app-footer">
+            &copy; 2026 SuperCalc Premium &bull; v5.1 Professional Edition
         </footer>
     </div>
 
-    <script type="module" src="app.js"></script>
+    <script type="module" src="src/bootstrap.js"></script>
 </body>
 </html>

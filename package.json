@@ -1,0 +1,17 @@
+{
+  "name": "supercalc-premium",
+  "version": "5.1.0",
+  "private": true,
+  "description": "Carrito de supermercado + facturación. HTML/CSS/JS nativo, sin bundler, sin dependencias de runtime.",
+  "type": "module",
+  "scripts": {
+    "verify": "node scripts/verify.mjs",
+    "check:syntax": "node scripts/check-syntax.mjs",
+    "check:imports": "node scripts/verify-imports.mjs",
+    "check:all": "node scripts/check-syntax.mjs && node scripts/verify-imports.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "pnpm@11.9.0"
+}
