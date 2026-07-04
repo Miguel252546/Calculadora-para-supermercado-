@@ -60,61 +60,39 @@
                 <section class="prelist-panel" id="prelist-panel" aria-hidden="true" aria-label="Lista de productos frecuentes" hidden>
                     <header class="prelist-panel-header">
                         <h2 class="prelist-panel-title">📋 Lista Previa</h2>
-                        <p class="prelist-panel-hint">Selecciona un producto frecuente o añade uno nuevo a tu lista.</p>
+                        <p class="prelist-panel-hint">Tus productos frecuentes a un toque. Buscá, ordená y elegí.</p>
                     </header>
 
                     <!-- Buscador -->
-                    <div class="prelist-toolbar">
+                    <div class="prelist-toolbar" role="search">
                         <label class="visually-hidden" for="prelist-search">Buscar en la lista previa</label>
+                        <span class="prelist-search-icon" aria-hidden="true">🔍</span>
                         <input type="search" id="prelist-search" class="modern-input prelist-search"
-                               placeholder="🔍  Buscar por nombre, marca o categoría…" autocomplete="off">
+                               placeholder="Buscar producto…" autocomplete="off">
                     </div>
 
-                    <!-- Orden y filtros -->
+                    <!-- Chips de orden + contador -->
                     <div class="prelist-controls">
-                        <div class="prelist-control-group" role="group" aria-label="Ordenar por">
-                            <span class="prelist-control-label">Ordenar</span>
-                            <div class="sort-bar" id="prelist-sort"></div>
-                        </div>
-                        <div class="prelist-control-group" role="group" aria-label="Filtrar por categoría">
-                            <span class="prelist-control-label">Categoría</span>
-                            <div class="chip-bar" id="prelist-categories"></div>
-                        </div>
-                        <div class="prelist-control-group" id="prelist-brands-group" hidden role="group" aria-label="Filtrar por marca">
-                            <span class="prelist-control-label">Marca</span>
-                            <div class="chip-bar" id="prelist-brands"></div>
-                        </div>
+                        <div class="sort-bar" id="prelist-sort" role="group" aria-label="Ordenar por"></div>
+                        <span class="prelist-results-count" id="prelist-results-count" aria-live="polite">0 resultados</span>
                     </div>
 
                     <!-- Resultados -->
-                    <div class="prelist-results" aria-live="polite">
-                        <div class="prelist-results-header">
-                            <span class="prelist-results-title">Productos</span>
-                            <span class="prelist-results-count" id="prelist-results-count">0 resultados</span>
-                        </div>
-                        <div class="prelist-grid" id="prelist-grid" role="list"></div>
-                    </div>
+                    <div class="prelist-grid" id="prelist-grid" role="list" aria-live="polite"></div>
 
-                    <!-- Acciones -->
-                    <div class="prelist-actions">
-                        <button type="button" class="btn-prelist-add" id="btn-prelist-add">
-                            <span aria-hidden="true">➕</span> Añadir producto nuevo a la lista
-                        </button>
-                    </div>
+                    <!-- Botón añadir -->
+                    <button type="button" class="btn-prelist-add" id="btn-prelist-add">
+                        <span aria-hidden="true">➕</span> Añadir producto nuevo a la lista
+                    </button>
 
-                    <!-- Datalist oculto para autocompletar categoría -->
+                    <!-- Datalist oculto para autocompletar categoría al crear/editar -->
                     <datalist id="prelist-category-list"></datalist>
 
                     <!-- Formulario inline para crear/editar producto de la lista previa -->
                     <section class="prelist-form-section" id="prelist-form-section" hidden>
                         <form class="prelist-form" id="prelist-form" aria-label="Crear o editar producto de la lista previa">
                             <div class="prelist-form-row">
-                                <div class="form-group">
-                                    <label for="prelist-category" class="form-label">Categoría</label>
-                                    <input type="text" id="prelist-category" class="modern-input"
-                                           placeholder="Ej. Lácteos" list="prelist-category-list" autocomplete="off">
-                                </div>
-                                <div class="form-group">
+                                <div class="form-group form-group-grow">
                                     <label for="prelist-name" class="form-label">Nombre</label>
                                     <input type="text" id="prelist-name" class="modern-input"
                                            placeholder="Ej. Leche entera 1L" autocomplete="off" required>
@@ -125,10 +103,20 @@
                                            placeholder="1" min="1" step="1" value="1">
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label for="prelist-brand" class="form-label">Marca <span class="label-hint">(opcional)</span></label>
-                                <input type="text" id="prelist-brand" class="modern-input" placeholder="Ej. Marca propia" autocomplete="off">
-                            </div>
+                            <details class="prelist-form-details">
+                                <summary>Detalles (opcional)</summary>
+                                <div class="prelist-form-details-body">
+                                    <div class="form-group">
+                                        <label for="prelist-category" class="form-label">Categoría</label>
+                                        <input type="text" id="prelist-category" class="modern-input"
+                                               placeholder="Ej. Lácteos" list="prelist-category-list" autocomplete="off">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="prelist-brand" class="form-label">Marca</label>
+                                        <input type="text" id="prelist-brand" class="modern-input" placeholder="Ej. Marca propia" autocomplete="off">
+                                    </div>
+                                </div>
+                            </details>
                             <div class="prelist-form-actions">
                                 <button type="button" class="btn-prelist-save" id="btn-prelist-save">💾 Guardar</button>
                                 <button type="button" class="btn-prelist-cancel" id="btn-prelist-cancel">Cancelar</button>

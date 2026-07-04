@@ -15,8 +15,6 @@ import { PrelistPresenter } from '../presenters/PrelistPresenter.js';
  */
 export function makePrelistController({ managePrelist, settingsRepository, selectPrelistItem }) {
   // Estado persistente entre aperturas
-  let activeCategory = 'Todas';
-  let activeBrand = 'Todas';
   let currentSearch = '';
   let sortMode = 'most_used';
   let editingId = null;
@@ -29,17 +27,11 @@ export function makePrelistController({ managePrelist, settingsRepository, selec
 
   function filterAndSort() {
     let items = managePrelist.list();
-    if (activeCategory !== 'Todas') {
-      items = items.filter((p) => p.category === activeCategory);
-    }
-    if (activeBrand !== 'Todas') {
-      items = items.filter((p) => (p.brand || '') === activeBrand);
-    }
     if (currentSearch) {
       const q = currentSearch.toLowerCase();
       items = items.filter((it) =>
         it.name.toLowerCase().includes(q) ||
-        it.category.toLowerCase().includes(q) ||
+        (it.category && it.category.toLowerCase().includes(q)) ||
         (it.brand && it.brand.toLowerCase().includes(q))
       );
     }
@@ -85,30 +77,11 @@ export function makePrelistController({ managePrelist, settingsRepository, selec
     const badge = $('prelist-count-badge');
     if (badge) badge.textContent = String(managePrelist.list().length);
 
-    // Categorías
+    // Datalist de categorías (sigue disponible para autocompletar al
+    // crear/editar un producto, aunque ya no se muestren filtros).
     const cats = managePrelist.categories();
-    const catsEl = $('prelist-categories');
-    if (catsEl) catsEl.innerHTML = PrelistPresenter.renderCategoriesHtml(cats, activeCategory);
-
-    // Datalist de categorías (autocomplete)
     const datalist = $('prelist-category-list');
     if (datalist) datalist.innerHTML = PrelistPresenter.renderCategoryDatalistHtml(cats);
-
-    // Marcas (sólo si hay)
-    const brands = activeCategory === 'Todas'
-      ? managePrelist.brands()
-      : managePrelist.list()
-          .filter((p) => p.category === activeCategory)
-          .map((p) => p.brand)
-          .filter((b) => b && b.trim());
-    const uniqueBrands = [...new Set(brands)].sort();
-    const brandsEl = $('prelist-brands');
-    const brandsGroup = $('prelist-brands-group');
-    if (brandsEl) brandsEl.innerHTML = PrelistPresenter.renderBrandsHtml(uniqueBrands, activeBrand);
-    if (brandsGroup) {
-      if (uniqueBrands.length === 0) brandsGroup.setAttribute('hidden', '');
-      else brandsGroup.removeAttribute('hidden');
-    }
 
     // Orden
     const sortEl = $('prelist-sort');
@@ -205,23 +178,6 @@ export function makePrelistController({ managePrelist, settingsRepository, selec
       const btn = e.target.closest('.sort-btn');
       if (!btn) return;
       sortMode = btn.dataset.sort;
-      render();
-    });
-
-    // Categorías
-    on($('prelist-categories'), 'click', (e) => {
-      const btn = e.target.closest('.chip-btn');
-      if (!btn) return;
-      activeCategory = btn.dataset.category;
-      activeBrand = 'Todas';
-      render();
-    });
-
-    // Marcas
-    on($('prelist-brands'), 'click', (e) => {
-      const btn = e.target.closest('.chip-btn');
-      if (!btn) return;
-      activeBrand = btn.dataset.brand;
       render();
     });
 

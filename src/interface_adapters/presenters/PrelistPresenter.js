@@ -1,7 +1,10 @@
 // src/interface_adapters/presenters/PrelistPresenter.js
-// Genera HTML para el panel de lista previa usando los IDs y clases del
-// nuevo HTML (`prelist-*`). Mantiene compatibilidad con `.template-item`
-// como nombre semántico de cada card.
+// Genera HTML para el panel de lista previa.
+// Las marcas y categorías ya NO se exponen como filtros visuales ni como
+// chips dentro de cada card: la UI es ahora minimal y enfocada en el
+// producto. Los datos category/brand siguen en el modelo y se usan sólo
+// en el buscador (match por texto) y en el datalist de autocompletar al
+// crear/editar un producto.
 
 import { escapeHtml } from '../../frameworks/ui/DomBinder.js';
 
@@ -30,43 +33,26 @@ export const PrelistPresenter = {
       const freqBadge = item.count > 0
         ? `<span class="prelist-card-freq" title="Usado ${item.count} vez${item.count === 1 ? '' : 'es'}">${item.count > 9 ? '9+' : item.count}</span>`
         : '';
-      const brandText = item.brand
-        ? `<span class="prelist-card-brand">${escapeHtml(item.brand)}</span>`
-        : '';
       return `
         <div class="prelist-card template-item" data-id="${escapeHtml(item.id)}" role="listitem">
           <div class="prelist-card-main template-item-main">
             <span class="prelist-card-name item-name">${escapeHtml(item.name)} ${freqBadge}</span>
-            <span class="prelist-card-meta item-qty">
-              <span class="prelist-card-tag">${escapeHtml(item.category)}</span>
-              ${brandText}
-              <span>× ${item.qty}</span>
-            </span>
           </div>
-          <div class="prelist-card-actions template-item-actions">
-            <button type="button" class="prelist-icon-btn btn-item-edit" title="Editar" aria-label="Editar producto">✎</button>
-            <button type="button" class="prelist-icon-btn prelist-icon-btn--danger btn-item-delete" title="Eliminar" aria-label="Eliminar producto">×</button>
+          <div class="prelist-card-side">
+            <span class="prelist-card-qty" aria-label="Cantidad por defecto">× ${item.qty}</span>
+            <div class="prelist-card-actions template-item-actions">
+              <button type="button" class="prelist-icon-btn btn-item-edit" title="Editar" aria-label="Editar producto">✎</button>
+              <button type="button" class="prelist-icon-btn prelist-icon-btn--danger btn-item-delete" title="Eliminar" aria-label="Eliminar producto">×</button>
+            </div>
           </div>
         </div>`;
     }).join('');
   },
 
-  renderCategoriesHtml(categories, activeCategory) {
-    const all = ['Todas', ...categories];
-    return all.map((c) => {
-      const isActive = c === activeCategory;
-      return `<button type="button" class="chip-btn ${isActive ? 'is-active' : ''}" data-category="${escapeHtml(c)}">${escapeHtml(c)}</button>`;
-    }).join('');
-  },
-
-  renderBrandsHtml(brands, activeBrand) {
-    if (!brands || brands.length === 0) return '';
-    const all = ['Todas', ...brands];
-    return all.map((b) => {
-      const isActive = b === activeBrand;
-      const cls = b === 'Todas' ? 'chip-btn' : 'chip-btn chip-btn--brand';
-      return `<button type="button" class="${cls} ${isActive ? 'is-active' : ''}" data-brand="${escapeHtml(b)}">${escapeHtml(b)}</button>`;
-    }).join('');
+  // Mantenido sólo para uso interno (autocompletar al crear/editar un
+  // producto). Ya no se renderiza como filtro visible en el panel.
+  renderCategoryDatalistHtml(categories) {
+    return categories.map((c) => `<option value="${escapeHtml(c)}">`).join('');
   },
 
   renderSortHtml(currentSort) {
@@ -74,9 +60,5 @@ export const PrelistPresenter = {
       const isActive = m.key === currentSort;
       return `<button type="button" class="sort-btn ${isActive ? 'is-active' : ''}" data-sort="${m.key}">${m.label}</button>`;
     }).join('');
-  },
-
-  renderCategoryDatalistHtml(categories) {
-    return categories.map((c) => `<option value="${escapeHtml(c)}">`).join('');
   }
 };
