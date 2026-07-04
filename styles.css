@@ -804,6 +804,47 @@ input, select, textarea { font-family: inherit; color: inherit; }
 
 /* ============================== PRELIST ACTIONS ============================== */
 
+/* Toolbar de acciones en el panel de lista previa */
+.prelist-toolbar-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 0.25rem;
+}
+
+.btn-prelist-clear {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 6px 12px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: var(--transition);
+    min-height: 36px;
+    white-space: nowrap;
+}
+
+.btn-prelist-clear:hover:not(:disabled) {
+    border-color: var(--danger);
+    color: var(--danger);
+    background: var(--danger-soft);
+}
+
+.btn-prelist-clear:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+.btn-prelist-clear:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
 .btn-prelist-add {
     width: 100%;
     padding: 12px 14px;

@@ -77,6 +77,14 @@ export function makePrelistController({ managePrelist, settingsRepository, selec
     const badge = $('prelist-count-badge');
     if (badge) badge.textContent = String(managePrelist.list().length);
 
+    // Habilitar/deshabilitar botón de vaciar lista
+    const clearBtn = $('btn-prelist-clear');
+    if (clearBtn) {
+      const total = managePrelist.list().length;
+      if (total === 0) clearBtn.setAttribute('disabled', '');
+      else clearBtn.removeAttribute('disabled');
+    }
+
     // Datalist de categorías (sigue disponible para autocompletar al
     // crear/editar un producto, aunque ya no se muestren filtros).
     const cats = managePrelist.categories();
@@ -179,6 +187,23 @@ export function makePrelistController({ managePrelist, settingsRepository, selec
       if (!btn) return;
       sortMode = btn.dataset.sort;
       render();
+    });
+
+    // Vaciar lista
+    on($('btn-prelist-clear'), 'click', () => {
+      const total = managePrelist.list().length;
+      if (total === 0) return;
+      if (!confirm(`¿Vaciar los ${total} producto(s) de tu lista previa? Esta acción no se puede deshacer.`)) return;
+      try {
+        managePrelist.clear();
+        showToast('Lista previa vaciada.', 'warning');
+        editingId = null;
+        hideForm();
+        render();
+        onChange();
+      } catch (err) {
+        showToast(err.message || 'No se pudo vaciar la lista', 'error');
+      }
     });
 
     // Grid: editar / eliminar / seleccionar
